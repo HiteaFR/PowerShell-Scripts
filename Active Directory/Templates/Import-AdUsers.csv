@@ -1,0 +1,6 @@
+﻿firstname;lastname;username;email;streetaddress;city;state;department;password;telephone;jobtitle;company;ou
+Paul;Dupont;p.dupont;p.dupont@hitea.fr;;Agen;;;Test123Test1;;;;OU=Utilisateurs,OU=Agen,DC=dom,DC=hitea,DC=fr
+Bernard;Durand;b.durand;b.durand@hitea.fr;;Agen;;;Test123Test2;;;;OU=Utilisateurs,OU=Agen,DC=dom,DC=hitea,DC=fr
+David;Bellier;d.bellier;d.bellier@hitea.fr;;Agen;;;Test123Test3;;;;OU=Utilisateurs,OU=Agen,DC=dom,DC=hitea,DC=fr
+Joël;Tartas;j.tartas;j.tartas@hitea.fr;;Agen;;;Test123Test4;;;;OU=Utilisateurs,OU=Agen,DC=dom,DC=hitea,DC=fr
+Benoît;Canu;b.canu;b.canu@hitea.fr;;Agen;;;Test123Test5;;;;OU=Utilisateurs,OU=Agen,DC=dom,DC=hitea,DC=fr

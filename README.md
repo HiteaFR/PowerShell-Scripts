@@ -29,7 +29,7 @@ Certain scripts fonctionnent avec des CSV ou JSON, vous pouvez les trouver dans 
 - Copier/Télécharger des fichiers (PowerShell et Robocopy)
 - Gérer les ACL
 
-## Divers Windows
+## Windows
 
 - Changer la catégorie d'un réseau (public, privé, domaine...)
 - Activer la pavé numérique au démarrage
@@ -37,6 +37,10 @@ Certain scripts fonctionnent avec des CSV ou JSON, vous pouvez les trouver dans 
 - Executer un fichier si il existe
 - Augmenter la longeur des chemins d'accès
 - Activer le bureau à distance, à distance !
+
+## Windows Server
+
+- Optimiser Windows Server pour RDS
 
 # Dans le nuage (Cloud)
 
@@ -59,3 +63,12 @@ Certain scripts fonctionnent avec des CSV ou JSON, vous pouvez les trouver dans 
 ## Exchange Server
 
 - Exporter des boites au lettres en PST
+
+## OneDrive
+
+- Provisionner OneDrive pour les utilisateurs
+
+## SharePoint Online
+
+- Creer des sites SharePoint et des bibliothéques
+- Gerer les droits, l'héritage et les liaisons avec des groupes Azure AD
