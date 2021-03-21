@@ -16,6 +16,23 @@ Certain scripts fonctionnent avec des CSV ou JSON, vous pouvez les trouver dans 
 
 # Sur site (On Premise)
 
+## Windows / Windows Server
+
+- Changer la catégorie d'un réseau (public, privé, domaine...)
+- Activer la pavé numérique au démarrage
+- Configurer le NTP pour difuser la date et l'heure sur le réseau
+- Augmenter la longeur des chemins d'accès
+- Activer le bureau à distance, à distance !
+- Configuration des adresses IP et DNS
+- Optimiser Windows Server pour RDS
+- Installer des fonctionnalités et rôles
+
+## Hyper-V
+
+- Configuration d'Hyper-V
+- Créer et configurer des machines virtuelles
+- Créer et gérer des disques dur virtuels
+
 ## Active Directory
 
 - Installer les fonctionnalités AD DS, créer une nouvelle forêt.
@@ -29,18 +46,9 @@ Certain scripts fonctionnent avec des CSV ou JSON, vous pouvez les trouver dans 
 - Copier/Télécharger des fichiers (PowerShell et Robocopy)
 - Gérer les ACL
 
-## Windows
+## Exchange Server
 
-- Changer la catégorie d'un réseau (public, privé, domaine...)
-- Activer la pavé numérique au démarrage
-- Configurer le NTP pour difuser la date et l'heure sur le réseau
-- Executer un fichier si il existe
-- Augmenter la longeur des chemins d'accès
-- Activer le bureau à distance, à distance !
-
-## Windows Server
-
-- Optimiser Windows Server pour RDS
+- Exporter des boites au lettres en PST
 
 # Dans le nuage (Cloud)
 
@@ -48,21 +56,17 @@ Certain scripts fonctionnent avec des CSV ou JSON, vous pouvez les trouver dans 
 
 - Calculer la taille d'un conteneur blob
 
-## Microsoft 365 - Azure Active Directory
+## Azure Active Directory
 
 - Configurer les paramètres de l'organisation
 - Créer et importer des utilisateurs et des groupes
-- Gérer les appartenances
 - Assigner et gérer des licences
 
 ## Exchange Online
 
 - Charger des PST avec AzCopy
 - Créer des boites aux lettres, boites partagées et listes de diffusion
-
-## Exchange Server
-
-- Exporter des boites au lettres en PST
+- Gérer les appartenances
 
 ## OneDrive
 
@@ -71,4 +75,8 @@ Certain scripts fonctionnent avec des CSV ou JSON, vous pouvez les trouver dans 
 ## SharePoint Online
 
 - Creer des sites SharePoint et des bibliothéques
-- Gerer les droits, l'héritage et les liaisons avec des groupes Azure AD
+- Gérer les droits, l'héritage et les liaisons avec des groupes Azure AD
+
+## Teams
+
+- Utiliser les Webhooks pour recevoir des notifications dans un canal d'équipe
