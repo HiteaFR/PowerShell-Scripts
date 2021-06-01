@@ -16,13 +16,17 @@ Certain scripts fonctionnent avec des CSV ou JSON, vous pouvez les trouver dans 
 
 # Sur site (On Premise)
 
-## Windows / Windows Server
+## Windows
 
 - Creer un utiliateur/administrateur local
 - Tester l'apartenance à un groupe local
 - Utiliser les notifications Windows 10
 - Changer la catégorie d'un réseau (public, privé, domaine...)
+
+## Windows Server
+
 - Configurer le NTP pour difuser la date et l'heure sur le réseau
+- Redémarrage de serveur RDS avec gestion sessions
 
 ## Active Directory
 
