@@ -13,5 +13,21 @@ $body = ConvertTo-Json -depth 3 @{
     )
 }
 
+#autre exemple de message card
+$body = @{
+    "@type"    = "MessageCard"
+    "@context" = "<http://schema.org/extensions>"
+    "title"    = 'Titre'
+    "themeColor" = '0055DD'
+    "text"     = "Description"
+    "sections" = @(
+      @{
+        "activityTitle"    = 'Titre section'
+        "activitySubtitle" = 'Sous titre'
+        "activityText"     = 'Texte de la section'
+      }
+    )
+  } | ConvertTo-JSON
+
 #Envoyer le message sur Teams
 Invoke-RestMethod -Method post -ContentType 'Application/Json' -Body $body -Uri $webhook
