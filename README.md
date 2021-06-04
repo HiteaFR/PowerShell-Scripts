@@ -22,11 +22,14 @@ Certain scripts fonctionnent avec des CSV ou JSON, vous pouvez les trouver dans 
 - Tester l'apartenance à un groupe local
 - Utiliser les notifications Windows 10
 - Changer la catégorie d'un réseau (public, privé, domaine...)
+- Corriger l'erreur de relation d'aprobation
+- Convertir une image Windows au format ESD en WIM
 
 ## Windows Server
 
 - Configurer le NTP pour difuser la date et l'heure sur le réseau
 - Redémarrage de serveur RDS avec gestion sessions
+- Corriger les problèmes d'ouverture se sessions et lenteurs RDS/Serveur (App Container)
 
 ## Active Directory
 
@@ -42,6 +45,10 @@ Certain scripts fonctionnent avec des CSV ou JSON, vous pouvez les trouver dans 
 ## Exchange Server
 
 - Exporter des boites au lettres en PST
+
+## Réseau
+
+- Ping d'une plage d'IP ou d'une liste CSV
 
 # Dans le nuage (Cloud)
 
