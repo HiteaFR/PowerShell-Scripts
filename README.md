@@ -30,31 +30,46 @@ Certain scripts fonctionnent avec des CSV ou JSON, vous pouvez les trouver dans 
 - Configurer le NTP pour difuser la date et l'heure sur le réseau
 - Redémarrage de serveur RDS avec gestion sessions
 - Corriger les problèmes d'ouverture se sessions et lenteurs RDS/Serveur (App Container)
+- Créer des rapports de sauvegardes Windows Server
 
 ## Active Directory
 
 - Installer les fonctionnalités AD DS, créer une nouvelle forêt.
 - Créer, importer des utilisateurs
+- Impoter des groupes
+- Creer des dossiers personnels
 
 ## Système de fichiers
 
 - Monter un lecteur réseau
 - Copier/Télécharger des fichiers (PowerShell et Robocopy)
 - Comparer des CSV et trouver les valeurs identiques
+- Créer des dossiers partagés
 
 ## Exchange Server
 
 - Exporter des boites au lettres en PST
+- Redémarrer les services Exchange
 
 ## Réseau
 
 - Ping d'une plage d'IP ou d'une liste CSV
+
+## Hyper-V
+
+- Compacter des VHD
 
 # Dans le nuage (Cloud)
 
 ## Microsoft Azure
 
 - Calculer la taille d'un conteneur blob
+
+## Azure Active Directory
+
+- Lister les utilisateurs
+- Importer des utilisateurs
+- Gerer les licences
 
 ## Exchange Online
 
