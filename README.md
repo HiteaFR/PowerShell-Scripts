@@ -24,6 +24,8 @@ Certain scripts fonctionnent avec des CSV ou JSON, vous pouvez les trouver dans 
 - Changer la catégorie d'un réseau (public, privé, domaine...)
 - Corriger l'erreur de relation d'aprobation
 - Convertir une image Windows au format ESD en WIM
+- Obtenir la liste des programmes à distance
+- Créer un certificat
 
 ## Windows Server
 
@@ -38,6 +40,10 @@ Certain scripts fonctionnent avec des CSV ou JSON, vous pouvez les trouver dans 
 - Créer, importer des utilisateurs
 - Impoter des groupes
 - Creer des dossiers personnels
+- Créer des inventaires PC
+- Créer des rapports de droits utilisateur
+- Joindre un domaine
+- Valider l'apartenance à un groupe
 
 ## Système de fichiers
 
@@ -74,6 +80,10 @@ Certain scripts fonctionnent avec des CSV ou JSON, vous pouvez les trouver dans 
 ## Exchange Online
 
 - Charger des PST avec AzCopy
+
+## SharePoint Online
+
+- Changer la langue d'une collection de sites
 
 ## OneDrive
 
