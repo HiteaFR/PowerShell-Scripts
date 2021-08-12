@@ -9,7 +9,7 @@ foreach ($User in $AADUsers) {
 
     $FullName = "$($User.firstname) $($User.lastname)"
 
-    if ((Get-MsolUser -UserPrincipalName $User.username)) {
+    if ((Get-MsolUser -UserPrincipalName $User.username -ErrorAction SilentlyContinue)) {
         Write-Warning "A user account with UPN $($User.username) already exist in Azure Active Directory."
     }
     elseif (([string]::IsNullOrEmpty($User.password))) {
@@ -20,10 +20,12 @@ foreach ($User in $AADUsers) {
             New-MsolUser -DisplayName $FullName `
                 -FirstName $User.FirstName `
                 -LastName $User.LastName `
-                -UserPrincipalName $User.UserPrincipalName `
+                -UserPrincipalName $User.Username `
                 -UsageLocation $User.UsageLocation `
                 -LicenseAssignment $User.AccountSkuId `
-                -Password (ConvertTo-SecureString $user.password -AsPlainText -Force) `
+                -Password $user.password `
+                -City $User.City `
+                -Department $User.Department `
                 -PasswordNeverExpires $true `
                 -ForceChangePassword $False
             Write-Host "The user $($User.firstname) $($User.lastname) ($($User.username)) was created."

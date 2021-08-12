@@ -1,0 +1,6 @@
+﻿FirstName;LastName;AccountSkuId;UsageLocation;Username;Password;City;Department
+Paul;Dupont;reseller-account:O365_BUSINESS_PREMIUM;FR;p.dupont@hitea.fr;Test123Test1;AGEN;
+Bernard;Durand;reseller-account:O365_BUSINESS_PREMIUM;FR;b.durand@hitea.fr;Test123Test2;AGEN;
+David;Bellier;reseller-account:O365_BUSINESS_PREMIUM;FR;d.bellier@hitea.fr;Test123Test3;AGEN;
+Joël;Tartas;reseller-account:O365_BUSINESS_PREMIUM;FR;j.tartas@hitea.fr;Test123Test4;AGEN;
+Benoît;Canu;reseller-account:O365_BUSINESS_PREMIUM;FR;b.canu@hitea.fr;Test123Test5;AGEN;
