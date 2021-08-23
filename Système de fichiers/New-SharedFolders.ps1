@@ -1,17 +1,21 @@
 Import-Module activedirectory
 
 $Partages = Import-csv "Creation_Partage.csv" -Delimiter ";" -Encoding UTF8
-$BaseDir = "E:\"
-$Mode = "Access"
+$BaseDir = "D:\Partages\"
 $IsShared = $true
 
-if ($Mode -eq "Write") {
+$searchbase = Get-ADDomain | ForEach-Object { $_.DistinguishedName }
+$netbios = Get-ADDomain | ForEach-Object { $_.NetBIOSName }
+
+ForEach ($item In $Partages) {
+
+    if ($item.AccessType -eq "Write") {
     $Rights = "Modify, Synchronize"
     $Inheritance = "ContainerInherit, ObjectInherit"
     $Propagation = "None"
     $AccessControlType = "Allow"
 }
-elseif ($Mode -eq "Read") {
+elseif ($item.AccessType -eq "Read") {
     $Rights = "ReadAndExecute"
     $Inheritance = "ContainerInherit, ObjectInherit"
     $Propagation = "None"
@@ -24,11 +28,6 @@ else {
     $Propagation = "None"
     $AccessControlType = "Allow"
 }
-
-$searchbase = Get-ADDomain | ForEach-Object { $_.DistinguishedName }
-$netbios = Get-ADDomain | ForEach-Object { $_.NetBIOSName }
-
-ForEach ($item In $Partages) {
 
     $Shared_Folder = Join-Path $BaseDir $item.Name
 
@@ -61,7 +60,7 @@ ForEach ($item In $Partages) {
 
     $check = [ADSI]::Exists("LDAP://$($item.GroupLocation),$($searchbase)")
 
-    $Group = (($item.name -replace " ", "-" -replace "\\", "_" -replace ",", "-") + "_" + $Mode)
+    $Group = (($item.name -replace " ", "-" -replace "\\", "_" -replace ",", "-") + "_" + $item.AccessType)
 
     If ($check -eq $True) { 
         Try { 
