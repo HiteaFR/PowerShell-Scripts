@@ -1,8 +1,7 @@
 Import-Module activedirectory
 
-$Partages = Import-csv "Creation_Partage.csv" -Delimiter ";" -Encoding UTF8
+$Partages = Import-csv "Templates\New-SharedFolders.csv" -Delimiter ";" -Encoding UTF8
 $BaseDir = "D:\Partages\"
-$IsShared = $true
 
 $searchbase = Get-ADDomain | ForEach-Object { $_.DistinguishedName }
 $netbios = Get-ADDomain | ForEach-Object { $_.NetBIOSName }
@@ -10,24 +9,27 @@ $netbios = Get-ADDomain | ForEach-Object { $_.NetBIOSName }
 ForEach ($item In $Partages) {
 
     if ($item.AccessType -eq "Write") {
-    $Rights = "Modify, Synchronize"
-    $Inheritance = "ContainerInherit, ObjectInherit"
-    $Propagation = "None"
-    $AccessControlType = "Allow"
-}
-elseif ($item.AccessType -eq "Read") {
-    $Rights = "ReadAndExecute"
-    $Inheritance = "ContainerInherit, ObjectInherit"
-    $Propagation = "None"
-    $AccessControlType = "Allow"
-
-}
-else {
-    $Rights = "ReadAndExecute"
-    $Inheritance = "None"
-    $Propagation = "None"
-    $AccessControlType = "Allow"
-}
+        $Rights = "Modify, Synchronize"
+        $Inheritance = "ContainerInherit, ObjectInherit"
+        $Propagation = "None"
+        $AccessControlType = "Allow"
+    }
+    elseif ($item.AccessType -eq "Read") {
+        $Rights = "ReadAndExecute"
+        $Inheritance = "ContainerInherit, ObjectInherit"
+        $Propagation = "None"
+        $AccessControlType = "Allow"
+    }
+    elseif ($item.AccessType -eq "Access") {
+        $Rights = "ReadAndExecute"
+        $Inheritance = "None"
+        $Propagation = "None"
+        $AccessControlType = "Allow"
+    }
+    else {
+        Write-Host "AccessType is empty"
+        Return
+    }
 
     $Shared_Folder = Join-Path $BaseDir $item.Name
 
@@ -44,7 +46,7 @@ else {
         Write-Host "Error, Folder $($Shared_Folder) not created!"
     }
 
-    if (($IsShared -eq $true) -and (!(Get-SmbShare -Name $item.Name))) {
+    if (($item.IsShared -eq $true) -and (!(Get-SmbShare -Name $item.Name -ErrorAction SilentlyContinue))) {
         try {
             New-SmbShare -Name $item.Name -Path $Shared_Folder -FullAccess "Tout le monde"
             Set-SmbShare -Name $item.Name -FolderEnumerationMode AccessBased -Force
@@ -62,7 +64,7 @@ else {
 
     $Group = (($item.name -replace " ", "-" -replace "\\", "_" -replace ",", "-") + "_" + $item.AccessType)
 
-    If ($check -eq $True) { 
+    If ($check -eq $True) {
         Try { 
             $TheGroup = Get-ADGroup $Group
             Write-Host "Group $($Group) alread exists! Group creation skipped! SID: $($TheGroup.SID)"

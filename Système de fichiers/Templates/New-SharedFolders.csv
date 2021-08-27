@@ -1,0 +1,13 @@
+﻿Name;GroupType;IsShared;AccessType;GroupLocation
+Commun;Global;true;Read;OU=Groupes,OU=Agen
+Commerce;Global;true;Read;OU=Groupes,OU=Agen
+Achats;Global;true;Read;OU=Groupes,OU=Agen
+Direction;Global;true;Read;OU=Groupes,OU=Agen
+Marketing;Global;true;Read;OU=Groupes,OU=Agen
+Technique;Global;true;Read;OU=Groupes,OU=Agen
+Commun;Global;true;Write;OU=Groupes,OU=Agen
+Commerce;Global;true;Write;OU=Groupes,OU=Agen
+Achats;Global;true;Write;OU=Groupes,OU=Agen
+Direction;Global;true;Write;OU=Groupes,OU=Agen
+Marketing;Global;true;Write;OU=Groupes,OU=Agen
+Technique;Global;true;Write;OU=Groupes,OU=Agen
