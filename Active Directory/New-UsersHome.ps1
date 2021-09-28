@@ -1,8 +1,25 @@
-﻿# Définir le domaine
-$Domain = "@Domaine.local"
-
-# Définir le répoertoire racine des dossiers
-$BaseDir = "C:\UsersHome"
+﻿<#
+ 
+    .SYNOPSIS
+    Créer des dossiers utilisateurs avec les autorisations contrôle total
+   
+    .PARAMETER Domain
+    Indique le domaine
+   
+    .PARAMETER BaseDir
+    Indique le dossier racine
+   
+    .EXAMPLE
+    New-UsersHome -Domain "@Domaine.local" -BaseDir "C:\UsersHome"
+ 
+#>
+ 
+param (
+    [parameter(Mandatory = $True)]
+    [ValidateNotNullOrEmpty()]$Domain,
+    [parameter(Mandatory = $true)]
+    [ValidateNotNullOrEmpty()]$BaseDir
+)
 
 # Lister tous les utilisateurs du domaine
 $Users = Get-ADUser -Filter { UserPrincipalName -like "*$($Domain)" } | Select SAMAccountName, SID
