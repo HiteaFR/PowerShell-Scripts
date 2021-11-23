@@ -1,19 +1,108 @@
-New-VM -Name $Args.VmName -Generation 2 -SwitchName $Args.SwitchName -Path $Args.VmPath -NewVHDPath $Args.VhdPath -NewVHDSizeBytes 127GB
+Import-Module Hyper-V
 
-New-VM -Name $Args.VmName -Generation 2 -SwitchName $Args.SwitchName -Path $Args.VmPath -VHDPath $Args.VhdPath
+$HypervConfig = Get-VMHost | Select-Object VirtualHardDiskPath, VirtualMachinePath
 
-New-VM -Name $Args.VmName -Generation 2 -SwitchName $Args.SwitchName -Path $Args.VmPath -NoVHD
+Write-Host ""
+Write-Host "Emlacement des VM: " $HypervConfig.VirtualMachinePath
+Write-Host "Emplacement des VHD: " $HypervConfig.VirtualHardDiskPath
+Write-Host ""
 
-Set-VM -Name $Args.VmName -CheckpointType Production -AutomaticCheckpointsEnabled $false -AutomaticStartAction Start -AutomaticStopAction Shutdown -ProcessorCount $Args.VmProc -MemoryStartupBytes $Args.VmRam
+$NewConfig = Read-Host "Voulez-vous changer les emplacements ? (o pour oui, non par défaut) "
 
-Enable-VMIntegrationService -VMName $Args.VmName -Name "Interface de services d’invité"
+if ($NewConfig -eq "o") {
 
-Disable-VMIntegrationService -VMName $Args.VmName -Name "Interface de services d’invité"
+    $HvVmPath = Read-Host "Entre un chemin pour les VM (a pour annuler)"
 
-New-VHD -Path $Args.VhdPath -SizeBytes $Args.VhdSize -Dynamic
+    if (Test-Path $HvVmPath -ErrorAction SilentlyContinue) {
+        Set-VMHost -VirtualMachinePath $HvVmPath
+    }
 
-Add-VMHardDiskDrive -VMName $Args.VmName -Path $Args.VhdPath
+    $HvVhdPath = Read-Host "Entre un chemin pour les VHD (a pour annuler)"
 
-Set-VMFirmware $Args.VmName -EnableSecureBoot On -BootOrder ((Get-VMFirmware $Args.VmName).BootOrder[1]), ((Get-VMFirmware $Args.VmName).BootOrder[0])
+    if (Test-Path $HvVhdPath -ErrorAction SilentlyContinue) {
+        Set-VMHost -VirtualHardDiskPath $HvVhdPath
+    }
 
-Start-VM $Args.VmName
+    $HypervConfig = Get-VMHost | Select-Object VirtualHardDiskPath, VirtualMachinePath
+
+    Write-Host ""
+    Write-Host "Emlacement des VM: " $HypervConfig.VirtualMachinePath
+    Write-Host "Emplacement des VHD: " $HypervConfig.VirtualHardDiskPath
+    Write-Host ""
+
+}
+
+$Template = Read-Host "Avez-vous un template VHD pour votre VM ? (o pour oui, non par défaut) "
+
+if ($Template -eq "o") {
+    do {
+
+        $TemplatePath = Read-Host "Entre un chemin pour le VHD (a pour annuler)"
+
+        if ($TemplatePath -eq "a") {
+            break
+        }
+
+    } until (Test-Path $TemplatePath -ErrorAction SilentlyContinue)
+
+}
+
+$VMName = Read-Host "Entrez un Nom pour votre VM"
+$VMSwitch = Read-Host "Entrez un le nom du swith pour votre VM"
+New-Item -Path (Join-Path $HypervConfig.VirtualMachinePath ($VMName + "\Virtual Hard Disks")) -ItemType Directory -Force
+$VhdPath = (Join-Path $HypervConfig.VirtualMachinePath ($VMName + "\Virtual Hard Disks"))
+
+if (!(Test-Path $TemplatePath -ErrorAction SilentlyContinue)) {
+    $VhdSize = Read-Host "Entrez la capacité pour le VHDx (avec Gb à la fin)"
+    $VhdFile = $VMName + ".vhdx"
+    New-VM -Name $VMName -Generation 2 -SwitchName $VMSwitch -Path $HypervConfig.VirtualMachinePath -NewVHDPath (Join-Path $VhdPath $VhdFile) -NewVHDSizeBytes ($VhdSize)
+}
+elseif (Test-Path $TemplatePath -ErrorAction SilentlyContinue) {
+    Start-BitsTransfer -Source $TemplatePath -Destination $VhdPath
+    $VhdFile = Split-Path $TemplatePath -leaf
+    New-VM -Name $VMName -Generation 2 -SwitchName $VMSwitch -Path $HypervConfig.VirtualMachinePath -VHDPath (Join-Path $VhdPath $VhdFile)
+}
+else {
+    New-VM -Name $VMName -Generation 2 -SwitchName $VMSwitch -Path $HypervConfig.VirtualMachinePath -NoVHD
+}
+
+$VMProc = Read-Host "Entrez le nombre de processeurs pour votre VM"
+$VMRam = Read-Host "Entrez la RAM pour votre VM (avec Gb à la fin) "
+
+Set-VM -Name $VMName -CheckpointType Production -AutomaticCheckpointsEnabled $false -AutomaticStartAction Start -AutomaticStopAction Shutdown -ProcessorCount $VMProc -MemoryStartupBytes ($VMRam)
+Set-VMFirmware $VMName -EnableSecureBoot On -BootOrder ((Get-VMFirmware $VMName).BootOrder[1]), ((Get-VMFirmware $VMName).BootOrder[0])
+
+Enable-VMIntegrationService -VMName $VMName -Name "Guest Service Interface"
+
+$VMDC = Read-Host "Est-ce que votre VM est un controlleur de domaine ? (o pour oui, non par défaut) "
+if ($VMDC -eq "o") {
+    Disable-VMIntegrationService -VMName $VMName -Name "Time Synchronization"
+}
+
+$VMHdd = Read-Host "Est-ce que vous souhaitez ajouter un autre VHD à la VM ? (o pour oui, non par défaut) "
+if ($VMHdd -eq "o") {
+
+    $VhdName = Read-Host "Entrez un nom pour le VHDx (avec .vhdx)"
+    $VhdSize = Read-Host "Entrez la capacité pour le VHDx (en Gb)"
+
+    New-VHD -Path (Join-Path $VhdPath $VhdName) -SizeBytes $VhdSize -Dynamic
+
+    Add-VMHardDiskDrive -VMName $VMName -Path (Join-Path $VhdPath $VhdName)
+}
+
+$VMOs = Read-Host "Quel est l'OS de votre VM (l pour linux, Windows par défaut) "
+
+switch ($VMOs) {
+    "l" { 
+
+    }
+    Default {
+        
+    }
+}
+
+$StartVM = Read-Host "Voulez-Vous démarrer la VM ? (o pour oui, non par défaut) "
+
+if ($StartVM -eq "o") {
+    Start-VM $VMName
+}
