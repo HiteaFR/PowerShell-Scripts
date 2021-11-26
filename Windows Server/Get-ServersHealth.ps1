@@ -9,4 +9,6 @@ foreach ($Server in $Hosts) {
 
     Test-WSMan -ComputerName $Server -Credential $Credential -Authentication default
 
+    Invoke-Command -VMId $Hosts -Credential $Credential -FilePath "C:\Git\PowerShell-Scripts\Hyper-V\Get-VMInfos.ps1"
+
 }
