@@ -1,8 +1,11 @@
 $Compte = Read-Host "Choisir un compte (user@domaine.fr)"
 $Action = Read-Host "V pour voir ou M pour voir et modifier"
+# $Excluded = Read-Host "Compte Exclus séparé par des virgules"
+# Where-Object Identity -notlike "*Meeting4Display*" | Where-Object Identity -notlike "*notification*"
+$Excluded = @('*Meeting4Display*', '*notification*')
 
 $AuditMailboxe = Get-Mailbox -Identity $Compte
-$Mailboxes = Get-Mailbox -ResultSize Unlimited | Where-Object RecipientTypeDetails -eq "UserMailbox" | Where-Object Identity -notlike "*Meeting4Display*" | Where-Object Identity -notlike "*notification*"
+$Mailboxes = Get-Mailbox -ResultSize Unlimited | Where-Object RecipientTypeDetails -eq "UserMailbox" | Where-Object { $Excluded -notcontains $_.Identity }
 
 foreach ($Bal in $Mailboxes) {
 
@@ -28,24 +31,9 @@ foreach ($Bal in $Mailboxes) {
             
             }
         }
-
     }
     else {
         Write-Host "$($AuditMailboxe.Identity) a acces au Calendrier de $($Bal.Identity)" -ForegroundColor Green
     }
 
 }
-
-<#
-
-$valuesToLookFor = @(
-    'Completed',
-    'CompletedWithErrors',
-    'Corrupted',
-    'Failed',
-    'Stopped')
-
-(Get-Migrationbatch -Identity $MigrationBatchName |
-    Where-Object { $valuesToLookFor -contains $_.Status })
-
-#>
