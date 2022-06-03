@@ -55,7 +55,8 @@ $ListName = Read-Host "List Name"
 [pscredential]$credObject = New-Object System.Management.Automation.PSCredential ($creduser, $secStringPassword)
 
 Connect-AzureAD -Credential $credObject
-Connect-PnPOnline -Url $SiteURL -UseWebLogin
+# Register-PnPManagementShellAccess
+Connect-PnPOnline -Url $SiteURL -Credentials $credObject
 
 $Table2 = New-Object 'System.Collections.Generic.List[System.Object]'
 

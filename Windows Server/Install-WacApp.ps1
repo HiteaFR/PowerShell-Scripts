@@ -12,6 +12,8 @@ Function Install-WacApp {
         [int]$Port = 443
     )
 
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
     $Output = (Join-Path $env:TEMP "WAC.msi")
     $Logfile = (Join-Path $env:TEMP "WAC.txt")
 
