@@ -1,12 +1,14 @@
 
-#Définition des variables
-$ServerBroker = "Srv-Broker.domain.local"
-$ServerHost = "Srv-Host.domain.local"
+$ServerBroker = "Broker Name"
+$ServerHostList = @("RDS Name", "RDS Name", "RDS Name")
 $webhook = "Teams WebHook URL"
 
 $TempLocalPath = "$env:Temp"
-$LogTempFile = $TempLocalPath + "\" + ($ServerHost) + "_" + (Get-Date -UFormat "%d-%m-%Y") + ".log"
-$LogFolder = "C:\Log_Folder"
+$LogTempFile = $TempLocalPath + "\" + ($ServerBroker) + "_" + (Get-Date -UFormat "%d-%m-%Y") + ".log"
+$LogFolder = "C:\Logs"
+
+$TLS12Protocol = [System.Net.SecurityProtocolType] 'Ssl3 , Tls12'
+[System.Net.ServicePointManager]::SecurityProtocol = $TLS12Protocol
 
 #Reprise d'un fonction de log
 Function Write-Log {
@@ -26,29 +28,34 @@ Function Write-Log {
 
 Write-Log -LogOutput ("Heure de début $(Get-Date -UFormat "%T")")
 
-#Récupérer les sessions activent sur l'hôte RDS
-$Sessions = Get-RDUserSession -ConnectionBroker $ServerBroker | Where-Object HostServer -eq $ServerHost
+Foreach ($ServerHost in $ServerHostList) {
 
+  Set-RDSessionHost -SessionHost $ServerHost -NewConnectionAllowed NotUntilReboot -ConnectionBroker $ServerBroker
 
-#Parcourir les sessions activent pour les déconnecter avant le redémarrage
-foreach ($Session in $Sessions) {
+  #Récupérer les sessions activent sur l'hôte RDS
+  $Sessions = Get-RDUserSession -ConnectionBroker $ServerBroker | Where-Object HostServer -eq $ServerHost
 
-  #Ecriture d'un événement Windows
-  Write-EventLog -LogName "System" -Source "EventLog" -EventId 6013 -EntryType Information -Message "Session $($Session.UserName) fermée"
+  #Parcourir les sessions activent pour les déconnecter avant le redémarrage
+  foreach ($Session in $Sessions) {
 
-  Write-Log -LogOutput ("Session $($Session.UserName) fermée")
+    #Ecriture d'un événement Windows
+    Write-EventLog -LogName "System" -Source "EventLog" -EventId 6013 -EntryType Information -Message "Session $($Session.UserName) fermée"
 
-  #Déconnexion des sessions
-  Invoke-RDUserLogoff -HostServer $ServerHost -UnifiedSessionID $Session.UnifiedSessionID -Force
-}
+    Write-Log -LogOutput ("Session $($Session.UserName) fermée")
 
-try {
-  #Redémarrge du serveur et attente de la connectivité WinRM pour validation
-  Restart-Computer -ComputerName $ServerHost -Wait -For WinRM -Delay 30 -Timeout 3600
-  Write-Log -LogOutput ("$ServerHost redémarré")
-}
-catch {
-  Write-Log -LogOutput ("Erreur de redémarrage serveur: $ServerHost")
+    #Déconnexion des sessions
+    Invoke-RDUserLogoff -HostServer $ServerHost -UnifiedSessionID $Session.UnifiedSessionID -Force
+  }
+
+  try {
+    #Redémarrge du serveur et attente de la connectivité WinRM pour validation
+    Restart-Computer -ComputerName $ServerHost -Wait -For WinRM -Delay 30 -Timeout 3600
+    Write-Log -LogOutput ("$ServerHost redémarré")
+  }
+  catch {
+    Write-Log -LogOutput ("Erreur de redémarrage serveur: $ServerHost")
+  }
+
 }
 
 Write-Log -LogOutput ("Heure de fin $(Get-Date -UFormat "%T")")
@@ -61,9 +68,9 @@ Copy-Item $LogTempFile -Destination $LogFolder
 $body = @{
   "@type"      = "MessageCard"
   "@context"   = "<http://schema.org/extensions>"
-  "title"      = 'Rapport de redémarrage serveur'
+  "title"      = 'Rapport de redémarrage RDS'
   "themeColor" = '0055DD'
-  "text"       = "Serveur: " + $ServerHost
+  "text"       = "Serveurs: " + ($ServerHostList | Out-String)
   "sections"   = @(
     @{
       "activityTitle"    = 'Logs'

@@ -1,24 +1,36 @@
 $Compte = Read-Host "Choisir un compte (user@domaine.fr)"
 $Action = Read-Host "V pour voir ou M pour voir et modifier"
 # $Excluded = Read-Host "Compte Exclus séparé par des virgules"
-# Where-Object Identity -notlike "*Meeting4Display*" | Where-Object Identity -notlike "*notification*"
-$Excluded = @('*Meeting4Display*', '*notification*')
 
 $AuditMailboxe = Get-Mailbox -Identity $Compte
-$Mailboxes = Get-Mailbox -ResultSize Unlimited | Where-Object RecipientTypeDetails -eq "UserMailbox" | Where-Object { $Excluded -notcontains $_.Identity }
+$Mailboxes = Get-Mailbox -ResultSize Unlimited | Where-Object RecipientTypeDetails -eq "UserMailbox"
 
 foreach ($Bal in $Mailboxes) {
 
     if ($BAL.Languages -like "*FR*") {
-        $Calendar = Get-MailboxFolderPermission -Identity "$($BAL.PrimarySMTPAddress):\Calendrier" -ErrorAction SilentlyContinue | Select Identity, User, AccessRights
+        $Calendar = Get-MailboxFolderPermission -Identity "$($BAL.PrimarySMTPAddress):\Calendrier" -ErrorAction SilentlyContinue | Select-Object Identity, User, AccessRights
     }
     else {
-        $Calendar = Get-MailboxFolderPermission -Identity "$($BAL.PrimarySMTPAddress):\Calendar" -ErrorAction SilentlyContinue | Select Identity, User, AccessRights
+        $Calendar = Get-MailboxFolderPermission -Identity "$($BAL.PrimarySMTPAddress):\Calendar" -ErrorAction SilentlyContinue | Select-Object Identity, User, AccessRights
     }
 
-    if ($Calendar.User.DisplayName -notcontains $AuditMailboxe.Identity) {
-        Write-Host "$($AuditMailboxe.Identity) n'a pas acces au Calendrier de $($Bal.Identity)" -ForegroundColor Yellow
+    if ($Calendar.User.DisplayName -notcontains $AuditMailboxe.DisplayName) {
+        Write-Host "$($AuditMailboxe.DisplayName) n'a pas acces au Calendrier de $($Bal.DisplayName)" -ForegroundColor Red
         if ($Action -eq "M") {
+
+            if ($BAL.Languages -like "*FR*") {
+
+                Add-MailboxFolderPermission -Identity ($Bal.Identity + ":\Calendrier") -User $AuditMailboxe.UserPrincipalName -AccessRights Editor
+
+            }
+            else {
+
+                Add-MailboxFolderPermission -Identity ($Bal.Identity + ":\Calendar") -User $AuditMailboxe.UserPrincipalName -AccessRights Editor
+            
+            }
+            Write-Host "$($AuditMailboxe.DisplayName) a acces au Calendrier de $($Bal.DisplayName) en écriture" -ForegroundColor Green
+        }
+        elseif ($Action -eq "V") {
 
             if ($BAL.Languages -like "*FR*") {
 
@@ -30,10 +42,13 @@ foreach ($Bal in $Mailboxes) {
                 Add-MailboxFolderPermission -Identity ($Bal.Identity + ":\Calendar") -User $AuditMailboxe.UserPrincipalName -AccessRights Reviewer
             
             }
+
+            Write-Host "$($AuditMailboxe.DisplayName) a acces au Calendrier de $($Bal.DisplayName) en lecture" -ForegroundColor Green
         }
     }
     else {
-        Write-Host "$($AuditMailboxe.Identity) a acces au Calendrier de $($Bal.Identity)" -ForegroundColor Green
+        $Calendar | foreach { if ($_.User.DisplayName -eq $AuditMailboxe.DisplayName) { Write-Host "$($AuditMailboxe.DisplayName) a acces au Calendrier de $($Bal.DisplayName) en $($_.AccessRights)" -ForegroundColor Green }
+        }
     }
 
 }
